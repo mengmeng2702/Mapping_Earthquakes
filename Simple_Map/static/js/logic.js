@@ -2,7 +2,7 @@
 console.log("working");
 
 //create the tile layer that will be the bakcground of our map
-let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     opacity: 0.8,
@@ -18,15 +18,15 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 //create a base layer that holds both maps
 let baseMaps = {
-    Street: streets,
+    Light: light,
     Dark: dark
 };
 
 //create the map object with center, zoom level and default layer.
 let map = L.map("mapid",{
-    center: [30,30],
+    center: [44.0,-80.0],
     zoom: 2,
-    layers: [streets]
+    layers: [dark]
 })
 
 //Pass our map layers into out layers control and add the layers control to the map
@@ -72,19 +72,25 @@ L.control.layers(baseMaps).addTo(map);
 
 
 //accessing the airport GeoJSON URL
-let airportData = "https://raw.githubusercontent.com/mengmeng2702/Mapping_Earthquakes/main/majorAirports.json"
+let torontoData = "https://raw.githubusercontent.com/mengmeng2702/Mapping_Earthquakes/main/torontoRoutes.json"
+
+//create a style for the lines
+let myStyle = {
+    color: "#ffffa1",
+    weight:2
+}
+
 //grabbing our GeoJSON data
-d3.json(airportData).then(function(data){
+d3.json(torontoData).then(function(data){
     console.log(data);
     //creating a GeoJSON layer with the retrieved data
     L.geoJson(data,{
-        pointToLayer: function(feature, latlng){
-            return L.marker(latlng)
-            .bindPopup("<h2>Airport code: "+feature.properties.faa+"</h2><hr><h3>Airport name: "+feature.properties.name);
+        style: myStyle,
+        onEachFeature: function(feature, layer){
+            layer.bindPopup("<h3>Airline: "+feature.properties.airline+"</h3><hr><h3>Destination: "+feature.properties.dst);
         }
+        // "color": "light yellow",
+        // "weight": 2
     }).addTo(map);
 
 })
-
-//then add our graymap tile layer to the map
-streets.addTo(map);
