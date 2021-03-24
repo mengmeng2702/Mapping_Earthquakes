@@ -19,13 +19,13 @@ let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/sate
 //create a base layer that holds both maps
 let baseMaps = {
     "Streets": streets,
-    "Satellite Streets": satelliteStreets
+    "Satellite": satelliteStreets
 };
 
 //create the map object with center, zoom level and default layer.
 let map = L.map("mapid",{
-    center: [43.7, -79.3],
-    zoom: 11,
+    center: [39.5, -98.5],
+    zoom: 3,
     layers: [streets]
 })
 
@@ -72,7 +72,7 @@ L.control.layers(baseMaps).addTo(map);
 
 
 //accessing the toronto neighborhoods GeoJSON URL
-let torontoHoods = "https://raw.githubusercontent.com/mengmeng2702/Mapping_Earthquakes/main/torontoNeighborhoods.json"
+let earthquakeData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
 
 //create a style for the lines
 let myStyle = {
@@ -82,14 +82,9 @@ let myStyle = {
 }
 
 //grabbing our GeoJSON data
-d3.json(torontoHoods).then(function(data){
+d3.json(earthquakeData).then(function(data){
     console.log(data);
     //creating a GeoJSON layer with the retrieved data
-    L.geoJson(data,{
-        onEachFeature: function(feature, layer){
-            console.log(layer);
-            layer.bindPopup("<h3>Neighborhood: " + feature.properties.AREA_NAME + "</h3>");
-        }
-    }).addTo(map);
+    L.geoJson(data).addTo(map);
 
 })
