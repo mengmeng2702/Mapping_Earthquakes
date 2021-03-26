@@ -1,2 +1,4 @@
 #ignore the config file
 config.js
+#not track ds store
+.DS_Store
